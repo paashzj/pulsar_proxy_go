@@ -35,10 +35,10 @@ func TestCommandConnect(t *testing.T) {
 	assert.Nil(t, err)
 	defer client.close()
 	cmdConnect := &pb.CommandConnect{
-		ProtocolVersion: proto.Int32(PulsarProtocolVersion),
-		ClientVersion:   proto.String(ClientVersionString),
+		ProtocolVersion: proto.Int32(util.PulsarProtocolVersion),
+		ClientVersion:   proto.String(util.ClientVersionString),
 	}
-	p := baseCommand(pb.BaseCommand_CONNECT, cmdConnect)
+	p := util.BaseCommand(pb.BaseCommand_CONNECT, cmdConnect)
 	bytes, err := util.MarshalPulsarCmd(p)
 	assert.Nil(t, err)
 	commandResp, err := client.Write(bytes)

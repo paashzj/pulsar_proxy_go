@@ -17,8 +17,16 @@
 
 package api
 
-import pb "github.com/paashzj/pulsar_proto_go"
+import (
+	pb "github.com/paashzj/pulsar_proto_go"
+	"github.com/panjf2000/gnet"
+	"net"
+)
 
 type PulsarServer interface {
-	Connect(connect *pb.CommandConnect) (*pb.CommandConnected, error)
+	Connect(addr net.Addr, connect *pb.CommandConnect) (*pb.CommandConnected, error)
+
+	Lookup(addr net.Addr, lookup *pb.CommandLookupTopic) (*pb.CommandLookupTopicResponse, error)
+
+	DirectHandler(addr net.Addr, command *pb.BaseCommand) ([]byte, gnet.Action)
 }

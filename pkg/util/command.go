@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package proxy
+package util
 
 import (
 	"fmt"
@@ -28,7 +28,7 @@ const (
 	PulsarProtocolVersion = int32(pb.ProtocolVersion_v13)
 )
 
-func baseCommand(cmdType pb.BaseCommand_Type, msg proto.Message) *pb.BaseCommand {
+func BaseCommand(cmdType pb.BaseCommand_Type, msg proto.Message) *pb.BaseCommand {
 	cmd := &pb.BaseCommand{
 		Type: &cmdType,
 	}
@@ -71,6 +71,10 @@ func baseCommand(cmdType pb.BaseCommand_Type, msg proto.Message) *pb.BaseCommand
 		cmd.GetLastMessageId = msg.(*pb.CommandGetLastMessageId)
 	case pb.BaseCommand_AUTH_RESPONSE:
 		cmd.AuthResponse = msg.(*pb.CommandAuthResponse)
+	case pb.BaseCommand_CONNECTED:
+		cmd.Connected = msg.(*pb.CommandConnected)
+	case pb.BaseCommand_LOOKUP_RESPONSE:
+		cmd.LookupTopicResponse = msg.(*pb.CommandLookupTopicResponse)
 	default:
 		panic(fmt.Sprintf("Missing command type: %v", cmdType))
 	}

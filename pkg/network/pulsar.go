@@ -53,27 +53,47 @@ func (s *Server) React(frame []byte, c gnet.Conn) ([]byte, gnet.Action) {
 	cmd := &pb.BaseCommand{}
 	err := proto.Unmarshal(frame[4:], cmd)
 	if err != nil {
-		logrus.Error("marshal request error ", err)
+		logrus.Errorf("%s do %s marshal request error: %s", c.RemoteAddr().String(), cmd.Type, err)
 		return nil, gnet.Close
 	}
 	switch *cmd.Type {
 	case pb.BaseCommand_CONNECT:
-		connected, err := s.pulsarImpl.Connect(cmd.Connect)
+		connected, err := s.pulsarImpl.Connect(c.RemoteAddr(), cmd.Connect)
 		if err != nil {
-			logrus.Error("execute error ", err)
+			logrus.Errorf("%s execute error %s", cmd.Type, err)
 			return nil, gnet.Close
 		}
-		marshal, err := connected.Marshal()
+		p := util.BaseCommand(pb.BaseCommand_CONNECTED, connected)
+		marshal, err := util.MarshalPulsarCmd(p)
+		if err != nil {
+			logrus.Error("marshal error ", cmd.Type)
+			return nil, gnet.Close
+		}
+		return marshal, gnet.None
+	case pb.BaseCommand_LOOKUP:
+		lookupResp, err := s.pulsarImpl.Lookup(c.RemoteAddr(), cmd.LookupTopic)
+		if err != nil {
+			logrus.Errorf("%s execute error %s", cmd.Type, err)
+			return nil, gnet.Close
+		}
+		p := util.BaseCommand(pb.BaseCommand_LOOKUP_RESPONSE, lookupResp)
+		marshal, err := util.MarshalPulsarCmd(p)
+		if err != nil {
+			logrus.Error("marshal error ", cmd.Type)
+			return nil, gnet.Close
+		}
+		return marshal, gnet.None
+	case pb.BaseCommand_PING:
+		p := util.BaseCommand(pb.BaseCommand_PONG, &pb.CommandPong{})
+		marshal, err := util.MarshalPulsarCmd(p)
 		if err != nil {
 			logrus.Error("marshal error ", cmd.Type)
 			return nil, gnet.Close
 		}
 		return marshal, gnet.None
 	default:
-		break
+		return s.pulsarImpl.DirectHandler(c.RemoteAddr(), cmd)
 	}
-	logrus.Error("unsupported protocol ", cmd.Type)
-	return nil, gnet.Close
 }
 
 func (s *Server) OnOpened(c gnet.Conn) (out []byte, action gnet.Action) {

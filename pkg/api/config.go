@@ -25,9 +25,11 @@ type NetworkConfig struct {
 }
 
 type ProxyConfig struct {
-	AdvertiseHost  string
-	AdvertisePort  int
-	PulsarHost     string
-	PulsarHttpPort int
-	PulsarTcpPort  int
+	ProxyVersion         string
+	ProxyProtocolVersion int32
+	AdvertiseHost        string
+	AdvertisePort        int
+	PulsarHost           string
+	PulsarHttpPort       int
+	PulsarTcpPort        int
 }

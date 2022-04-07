@@ -26,12 +26,14 @@ import (
 )
 
 var (
-	proxyListenHost = flag.String("proxy_listen_host", "localhost", "proxy listen host")
-	proxyHttpPort   = flag.Int("proxy_http_port", 6680, "proxy http port")
-	proxyTcpPort    = flag.Int("proxy_tcp_port", 8850, "proxy tcp port")
-	pulsarHost      = flag.String("pulsar_host", "localhost", "proxy pulsar host")
-	pulsarHttpPort  = flag.Int("pulsar_http_port", 8080, "pulsar http port")
-	pulsarTcpPort   = flag.Int("pulsar_tcp_port", 6650, "pulsar tcp port")
+	proxyVersion         = flag.String("proxy_version", "2.9.1", "proxy version")
+	proxyProtocolVersion = flag.Int("proxy_protocol_version", 19, "proxy protocol version")
+	proxyListenHost      = flag.String("proxy_listen_host", "localhost", "proxy listen host")
+	proxyHttpPort        = flag.Int("proxy_http_port", 6680, "proxy http port")
+	proxyTcpPort         = flag.Int("proxy_tcp_port", 8850, "proxy tcp port")
+	pulsarHost           = flag.String("pulsar_host", "localhost", "proxy pulsar host")
+	pulsarHttpPort       = flag.Int("pulsar_http_port", 8080, "pulsar http port")
+	pulsarTcpPort        = flag.Int("pulsar_tcp_port", 6650, "pulsar tcp port")
 )
 
 func main() {
@@ -40,6 +42,8 @@ func main() {
 	networkConfig.ListenHttpPort = *proxyHttpPort
 	networkConfig.ListenTcpPort = *proxyTcpPort
 	proxyConfig := &api.ProxyConfig{}
+	proxyConfig.ProxyVersion = *proxyVersion
+	proxyConfig.ProxyProtocolVersion = int32(*proxyProtocolVersion)
 	proxyConfig.PulsarHost = *pulsarHost
 	proxyConfig.PulsarHttpPort = *pulsarHttpPort
 	proxyConfig.PulsarTcpPort = *pulsarTcpPort

@@ -122,12 +122,16 @@ func (r *rpcClient) OnShutdown(server gnet.Server) {
 }
 
 func (r *rpcClient) OnOpened(c gnet.Conn) (out []byte, action gnet.Action) {
-	logrus.Info("rpc connect opened ", c.RemoteAddr())
+	logrus.Infof("%s rpc connect opened %s", c.LocalAddr(), c.RemoteAddr())
 	return nil, gnet.None
 }
 
 func (r *rpcClient) OnClosed(c gnet.Conn, err error) (action gnet.Action) {
-	logrus.Info("rpc connect closed ", c.RemoteAddr())
+	if err != nil {
+		logrus.Errorf("%s rpc connect closed %s, error: %s", c.LocalAddr(), c.RemoteAddr(), err)
+	} else {
+		logrus.Infof("%s rpc connect closed %s", c.LocalAddr(), c.RemoteAddr())
+	}
 	return gnet.None
 }
 
