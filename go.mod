@@ -6,7 +6,7 @@ require (
 	github.com/docker/docker v20.10.16+incompatible
 	github.com/docker/go-connections v0.4.0
 	github.com/gogo/protobuf v1.3.2
-	github.com/panjf2000/gnet v1.6.4
+	github.com/panjf2000/gnet v1.6.5
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.1
 )
